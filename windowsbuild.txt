@@ -1,0 +1,67 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+
+
+
+trigger:
+  tags:
+    include:
+    - Windows-releaseV3.0.[0-8]
+
+pool:
+  vmImage: windows-latest
+
+stages:
+- stage: Build
+  displayName: Build 
+  jobs:  
+  - job: Atlas_Windows_Build
+    displayName: Starting Windows build
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '16.14.2'
+      displayName: 'Install Node.js'
+   
+
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+
+          npm install i -g @ionic/cli
+          npm install i -g @angular/cli 
+          npm install -g electron-builder
+          cd electron
+          npm install
+
+      displayName: "Install app Dependencies"
+
+
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          npm install
+          $env:NODE_OPTIONS="--max-old-space-size=6144"
+          ionic build --prod
+          npx cap copy @capacitor-community/electron
+          cd electron
+          npm run electron:pack
+      displayName: "Build Windows app"
+   
+
+
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(Build.SourcesDirectory)/electron/dist/win-unpacked'
+        includeRootFolder: true
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.Repository.ID).zip'
+        replaceExistingArchive: true
+    
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Pipeline.Workspace)/a'
+        publishLocation: 'pipeline' 

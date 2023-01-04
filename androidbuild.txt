@@ -1,0 +1,72 @@
+
+# Build your Android project with Gradle.
+# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/android
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: AWM Android Build
+  jobs:  
+  - job: Build_Server
+    displayName: Prepare build environment
+    steps:
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '16.14.2'
+      displayName: 'Installing Node.js'
+
+    - script: |  
+        npm install 
+        npm install i -g @ionic/cli
+        npm install i -g @angular/cli 
+        npm install jetifier
+        npx jetify
+        npx cap sync android
+        export NODE_OPTIONS="--max-old-space-size=6144"
+        ionic capacitor build android --prod 
+        cd '$(Build.SourcesDirectory)/node_modules/phonegap-plugin-barcodescanner/src/android'
+        sed -i 's/compile/implementation/g' barcodescanner.gradle
+      displayName: 'performing ionic build'
+
+    - task: Gradle@2
+      inputs:
+        workingDirectory: '$(Build.SourcesDirectory)/android'
+        gradleWrapperFile: '$(Build.SourcesDirectory)/android/gradlew'
+        gradleOptions: '-Xmx3042m'
+        publishJUnitResults: false
+        tasks: 'assembleRelease'
+      displayName: 'building android apk'
+
+        
+    
+    - task: AndroidSigning@3
+      inputs:
+        apksign: true
+        apkFiles: '$(Build.SourcesDirectory)/android/app/build/outputs/apk/release/*.apk'
+        apksignerKeystoreFile: 'awmionic.jks'
+        apksignerKeystorePassword: '$(apksignerKeystorePassword)'
+        apksignerKeystoreAlias: '$(apksignerKeystoreAlias)'
+        apksignerArguments: --out $(Build.SourcesDirectory)/android/app/build/outputs/apk/release/AWM.apk
+        apksignerKeyPassword: '$(apksignerKeyPassword)'
+      displayName: 'Signing android apk'
+    
+    - task: CopyFiles@2  
+      inputs:
+        contents: '$(Build.SourcesDirectory)/android/app/build/outputs/apk/release/*.apk'
+        targetFolder: '$(build.artifactStagingDirectory)'
+      displayName: 'Copying signed apk to artifact folder' 
+       
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+          targetPath: '$(Pipeline.Workspace)/a'
+          publishLocation: 'pipeline' 
+          artifactName: 'AwmAndoid'
+      displayName: 'publish signed apk to pipeline'

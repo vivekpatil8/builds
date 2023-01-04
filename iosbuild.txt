@@ -1,0 +1,101 @@
+# Xcode
+# Build, test, and archive an Xcode workspace on macOS.
+# Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/xcode
+
+trigger:
+- ios
+
+pool:
+  vmImage: 'macos-latest'
+
+
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:  
+  - job: Build_Server
+    displayName: Build_ios
+
+    variables:
+      sdk: 'iphoneos'
+      configuration: 'Release'
+      teamId : '96YU33LT3B'
+
+    steps: 
+    - task: InstallAppleCertificate@2
+      inputs:
+        certSecureFile: 'Test.p12'
+        certPwd: $(certpass)
+        keychain: 'temp'
+        deleteCert: true
+        
+        
+    - task: InstallAppleProvisioningProfile@1
+      inputs:
+        provisioningProfileLocation: 'secureFiles'
+        provProfileSecureFile: 'AWM_Test.mobileprovision'
+        removeProfile: true
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '16.14.2'
+      displayName: 'Install Node.js'
+
+    - script: | 
+
+        npm install                 
+        npm install i -g @ionic/cli
+        npm install @capacitor/core @capacitor/cli
+        export NODE_OPTIONS="--max-old-space-size=6144"
+        ionic cap build ios --prod
+        cd ios/App/App
+        arch -x86_64 pod install
+
+      displayName: "Running Ios build"
+            
+
+    # - task: Xcode@5 #Xcode build and archive task 
+    #   inputs:
+    #     actions: 'archive'
+    #     scheme: 'App' 
+    #     sdk: '$(sdk)'
+    #     configuration: '$(configuration)'
+    #     xcWorkspacePath: '**/App.xcworkspace'
+    #     xcodeVersion: 13
+    #     # Signing & provisioning
+    #     signingOption: 'auto'
+    #     teamId: '$(teamId)'
+    #     # Package options
+    #     packageApp: true 
+    #     exportPath: 'output/$(SDK)/$(Configuration)' 
+    #     archivePath: '$(system.defaultworkingdirectory)/App.xcarchive'
+       
+    - script: |
+        /usr/bin/xcodebuild archive -sdk iphonesimulator \
+        -workspace $(system.defaultworkingdirectory)/ios/App/App.xcworkspace \
+        -scheme App -archivePath  $(system.defaultworkingdirectory)/App.xcarchive \
+        CODE_SIGN_STYLE=Automatic DEVELOPMENT_TEAM=96YU33LT3B 
+        ls -l "$(system.defaultworkingdirectory)/App.xcarchive"
+        
+                
+    - script: |
+
+        /usr/bin/xcodebuild -exportArchive -archivePath  $(system.defaultworkingdirectory)/App.xcarchive \
+        -exportPath $(system.defaultworkingdirectory)/App.ipa \
+        -exportOptionsPlist  $(system.defaultworkingdirectory)/ExportOptions.plist
+
+
+
+
+    # - task: CopyFiles@2  #copy ipa files to artifact directory 
+    #   inputs:
+    #     contents: '**/*.ipa'
+    #     targetFolder: '$(build.artifactStagingDirectory)'
+        
+       
+
+    # - task: PublishPipelineArtifact@1
+    #   inputs:
+    #       targetPath: '$(Pipeline.Workspace)/a'
+    #       publishLocation: 'pipeline' 
