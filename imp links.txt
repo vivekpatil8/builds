@@ -16,6 +16,7 @@ https://cert-manager.io/docs/
 https://www.youtube.com/watch?v=jq42brrSg28
 https://www.youtube.com/watch?v=92sKMUmv_wo
 https://learn.microsoft.com/en-us/azure/app-service/deploy-zip?tabs=cli#deploy-a-zip-package
+https://www.youtube.com/watch?v=Kt2p21ZRPHI
 
 
 
