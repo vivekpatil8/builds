@@ -1,0 +1,18 @@
+{
+    "ios": {
+        "debug": {
+            "codeSignIdentity": "Apple Development: ATG Apple (THH73A557N)",
+            "developmentTeam": "96YU33LT3B",
+            "provisioningProfile": "28fe049d-a005-4b2c-aa87-7ab2e92a0beb",
+            "packageType": "development",
+            "buildFlag": ["-allowProvisioningUpdates"]
+        },
+        "release": {
+            "codeSignIdentity": "Apple Development: ATG Apple (THH73A557N)",
+            "developmentTeam": "96YU33LT3B",
+            "provisioningProfile": "28fe049d-a005-4b2c-aa87-7ab2e92a0beb",
+            "packageType": "development",
+            "buildFlag": ["-allowProvisioningUpdates"]
+        }
+    }
+}
