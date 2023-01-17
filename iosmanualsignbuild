@@ -1,0 +1,94 @@
+# Xcod
+# Build, test, and archive an Xcode workspace on macOS.
+# Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/xcode
+
+trigger:
+- master
+
+pool:
+  vmImage: 'macos-latest'
+
+
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:  
+  - job: Build_Server
+    displayName: Build_ios
+
+    variables:
+      sdk: 'iphoneos'
+      configuration: 'Release'
+      teamId : '96YU33LT3B'
+
+    steps: 
+    - task: InstallAppleCertificate@2
+      inputs:
+        certSecureFile: 'Certificates.p12'
+        certPwd: $(certpass)
+        keychain: 'temp'
+        deleteCert: true
+        
+        
+    - task: InstallAppleProvisioningProfile@1
+      inputs:
+        provisioningProfileLocation: 'secureFiles'
+        provProfileSecureFile: 'AWM_Test.mobileprovision'
+        removeProfile: true
+
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '16.14.2'
+      displayName: 'Install Node.js'
+
+    - script: | 
+
+        npm install                 
+        npm install i -g @ionic/cli
+        npm install @capacitor/core@4.0.1 @capacitor/cli
+        export NODE_OPTIONS="--max-old-space-size=6144"
+        ionic cap build ios --prod --release --device --buildConfig=build.json 
+        cd ios/App
+        arch -x86_64 pod install
+
+      displayName: "Running Ios build"
+            
+
+    - task: Xcode@4 #Xcode build and archive task 
+      inputs:
+        actions: 'archive'
+        scheme: 'App' 
+        sdk: '$(sdk)'
+        configuration: '$(configuration)'
+        xcWorkspacePath: '$(Build.SourcesDirectory)/ios/App/App.xcworkspace'
+        archivePath: '$(Build.SourcesDirectory)/App.xcarchive'
+        xcodeVersion: 14
+        # Signing & provisioning
+        signingOption: 'manual'
+        destinationTypeOption: devices
+        exportOptions: plist
+        exportOptionsPlist: '$(system.defaultworkingdirectory)/ExportOptions.plist'    
+        exportPath: '$(system.defaultworkingdirectory)'
+        # teamId: '$(teamId)'
+        # Package options
+        packageApp: true 
+        signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+        provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
+        args:  CODE_SIGNING_ALLOWED=No 
+        # exportPath: 'output/$(SDK)/$(Configuration)' 
+
+       
+
+    - task: CopyFiles@2
+      inputs:
+        contents: '$(Build.SourcesDirectory)/_XcodeTaskExport_App/*.ipa'
+        targetFolder: '$(build.artifactStagingDirectory)'
+        overWrite: true
+        
+       
+
+    - task: PublishPipelineArtifact@1
+      inputs:
+          targetPath: '$(Pipeline.Workspace)/a'
+          publishLocation: 'pipeline' 
