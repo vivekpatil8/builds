@@ -1,6 +1,6 @@
 # add this file to main project for manual sign parameters 
 # developmentTeam and provisioningProfile - will get from the certificate.
-
+// these two lines are not added.
 {
     "ios": {
         "debug": {
