@@ -33,3 +33,4 @@ https://www.youtube.com/watch?v=OioFXptnFzw&ab_channel=BestDotNetTraining
 https://dotnettutorials.net/lesson/microservices-using-asp-net-core/
 https://www.youtube.com/watch?v=5fAn4sjj148&list=PL0FcjwFb9rU9pvlSeuRtOTqQ_9vghBFhx&index=4
 https://learn.microsoft.com/en-us/azure/defender-for-cloud/enable-enhanced-security?view=azure-devops
+https://learn.microsoft.com/en-us/azure/aks/internal-lb
