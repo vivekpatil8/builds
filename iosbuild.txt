@@ -95,7 +95,7 @@ stages:
         
        
 
-    # - task: PublishPipelineArtifact@1
-    #   inputs:
-    #       targetPath: '$(Pipeline.Workspace)/a'
-    #       publishLocation: 'pipeline' 
+     - task: PublishPipelineArtifact@1
+       inputs:
+           targetPath: '$(Pipeline.Workspace)/a'
+           publishLocation: 'pipeline' 
