@@ -38,3 +38,7 @@ https://learn.microsoft.com/en-us/azure/aks/internal-lb
 
 cordova android app sign and create
 https://www.youtube.com/watch?v=ZdxPzqy6JFg
+
+yt channel
+for angular and spring boot deployment - Learn code with durgesh 
+
