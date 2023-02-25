@@ -42,3 +42,7 @@ https://www.youtube.com/watch?v=ZdxPzqy6JFg
 yt channel
 for angular and spring boot deployment - Learn code with durgesh 
 
+
+kubernetes
+https://github.com/techiescamp/kubeadm-scripts
+
