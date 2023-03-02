@@ -48,4 +48,5 @@ https://github.com/techiescamp/kubeadm-scripts
 
 k8s production nginx tls addition with let's encrypt certificate
 https://www.youtube.com/watch?v=etC5d0vpLZE
+https://www.youtube.com/watch?v=JJTJfl-V_UM
 
