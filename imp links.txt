@@ -54,3 +54,6 @@ https://www.youtube.com/watch?v=JJTJfl-V_UM
 Prometheus Grafana dashboard for Kubernetes monitoring
 https://www.youtube.com/watch?v=3Xs49Urq16M
 
+Deploy N applications to N Kubernetes clusters with Argo CD ApplicationSet
+https://www.youtube.com/watch?v=VIaKOelZzn4
+
