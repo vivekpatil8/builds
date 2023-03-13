@@ -57,3 +57,7 @@ https://www.youtube.com/watch?v=3Xs49Urq16M
 Deploy N applications to N Kubernetes clusters with Argo CD ApplicationSet
 https://www.youtube.com/watch?v=VIaKOelZzn4
 
+Falco install and use
+https://www.youtube.com/watch?v=obhUD10CQ1E
+
+
