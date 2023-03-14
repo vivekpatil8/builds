@@ -45,6 +45,7 @@ for angular and spring boot deployment - Learn code with durgesh
 
 kubernetes
 https://github.com/techiescamp/kubeadm-scripts
+https://betterprogramming.pub/build-your-own-multi-node-kubernetes-cluster-with-monitoring-346a7e2ef6e2
 
 k8s production nginx tls addition with let's encrypt certificate
 https://www.youtube.com/watch?v=etC5d0vpLZE
