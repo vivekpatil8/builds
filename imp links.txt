@@ -62,6 +62,7 @@ https://www.youtube.com/watch?v=obhUD10CQ1E
 
 imp github
 https://github.com/ramanagali
+https://github.com/ChristianLempa/boilerplates
 
 use traefik in k8s
 https://www.youtube.com/watch?v=n5dpQLqOfqM
